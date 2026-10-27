@@ -1,0 +1,140 @@
+{
+  "trainings": [
+    {
+      "id": "tr-1793107797434-3apu",
+      "date": "2026-10-27",
+      "time": "18:30",
+      "duration": 60,
+      "title": "eeeee",
+      "category": "Technique",
+      "status": "prévu",
+      "intensity": 0,
+      "exercises": [],
+      "notes": "technique",
+      "bilan": ""
+    }
+  ],
+  "exerciseHistory": {
+    "lastTrainingDates": {
+      "Technique": "2026-10-27"
+    },
+    "recentExercises": [
+      {
+        "name": "ee",
+        "date": "2026-10-27",
+        "category": "Technique",
+        "sets": "2"
+      }
+    ]
+  },
+  "tests": [
+    {
+      "id": "test-1",
+      "name": "Sprint 30m départ arrêté",
+      "type": "temps",
+      "unit": "s",
+      "protocol": "Départ arrêté, pied avant sur la ligne de départ. Chronométrage précis au franchissement de la ligne des 30 mètres.",
+      "measures": [
+        {
+          "id": "m-101",
+          "date": "2026-09-15",
+          "value": 4.45,
+          "notes": "Test initial de rentrée."
+        },
+        {
+          "id": "m-102",
+          "date": "2026-09-29",
+          "value": 4.38,
+          "notes": "Terrain sec, meilleur départ."
+        },
+        {
+          "id": "m-103",
+          "date": "2026-10-13",
+          "value": 4.29,
+          "notes": "Bonne explosivité sur les 10 premiers mètres."
+        },
+        {
+          "id": "m-104",
+          "date": "2026-10-26",
+          "value": 4.22,
+          "notes": "Nouveau record personnel ! Excellente poussée."
+        }
+      ]
+    },
+    {
+      "id": "test-3",
+      "name": "Précision frappes aux 16m",
+      "type": "reussites",
+      "unit": "tirs cadrés",
+      "protocol": "10 frappes consécutives à l'entrée de la surface (16m50), avec ballon en léger mouvement. Comptabiliser les tirs cadrés (filets ou lucarnes).",
+      "measures": [
+        {
+          "id": "m-301",
+          "date": "2026-09-18",
+          "value": 5,
+          "attempts": 10,
+          "notes": "Beaucoup de tirs trop enlevés au-dessus de la barre."
+        },
+        {
+          "id": "m-302",
+          "date": "2026-10-05",
+          "value": 7,
+          "attempts": 10,
+          "notes": "Nette amélioration du verrouillage de cheville."
+        },
+        {
+          "id": "m-303",
+          "date": "2026-10-22",
+          "value": 8,
+          "attempts": 10,
+          "notes": "8 sur 10 ! Très bonne régularité pied droit."
+        }
+      ]
+    },
+    {
+      "id": "test-4",
+      "name": "Série de jongles pied gauche",
+      "type": "nombre",
+      "unit": "jongles",
+      "protocol": "Maximum de jongles consécutifs réalisés exclusivement du pied gauche sans faire toucher le sol au ballon.",
+      "measures": [
+        {
+          "id": "m-401",
+          "date": "2026-09-12",
+          "value": 24,
+          "notes": "Difficulté à garder la trajectoire droite."
+        },
+        {
+          "id": "m-402",
+          "date": "2026-09-28",
+          "value": 42,
+          "notes": "Meilleure souplesse de la cheville gauche."
+        },
+        {
+          "id": "m-403",
+          "date": "2026-10-15",
+          "value": 65,
+          "notes": "Rythme plus lent et mieux contrôlé."
+        },
+        {
+          "id": "m-404",
+          "date": "2026-10-25",
+          "value": 82,
+          "notes": "Record battu ! Objectif 100 en vue."
+        }
+      ]
+    },
+    {
+      "id": "test-1793061508061-2fbv",
+      "name": "Saut en longueur",
+      "type": "nombre",
+      "unit": "s",
+      "protocol": "",
+      "measures": []
+    }
+  ],
+  "settings": {
+    "geminiApiKey": "AQ.Ab8RN6KCZn8LatWO0oZKVJASu-p2qY1PMStOz7XAYsEuasHUNA",
+    "model": "gemini-3.8-flash"
+  }
+}

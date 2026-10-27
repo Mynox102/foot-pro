@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Football Progression | Suivi Personnel</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <div id="app-container">
+    <!-- BARRE LATÉRALE -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="sidebar-header">
+          <div class="brand-icon">⚽</div>
+          <div class="brand-info">
+            <h1>Football Pro</h1>
+            <p>Suivi de progression</p>
+          </div>
+        </div>
+
+        <nav class="nav-menu">
+          <a class="nav-item active" data-page="calendar">
+            <span class="nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </span>
+            <span>Calendrier</span>
+          </a>
+
+          <a class="nav-item" data-page="stats">
+            <span class="nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M18 9l-5 5-4-4-6 6"></path></svg>
+            </span>
+            <span>Statistiques</span>
+          </a>
+
+          <a class="nav-item" data-page="tests">
+            <span class="nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+            </span>
+            <span>Tests Physiques</span>
+          </a>
+
+          <a class="nav-item" data-page="coach">
+            <span class="nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </span>
+            <span>Coach IA</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="ai-status-pill" id="btn-sidebar-ai-settings" title="Configurer la clé API Gemini">
+          <div class="ai-status-indicator">
+            <span class="status-dot" id="sidebar-ai-dot"></span>
+            <span id="sidebar-ai-label" style="font-weight: 500;">Coach IA (Déconnecté)</span>
+          </div>
+          <span style="color: var(--text-muted); font-size: 11px;">⚙</span>
+        </div>
+
+        <button class="btn btn-secondary btn-sm" id="btn-open-backup" style="width: 100%; justify-content: flex-start;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Données & Sauvegarde
+        </button>
+      </div>
+    </aside>
+
+    <!-- WRAPPER PRINCIPAL -->
+    <main class="main-wrapper">
+      <header class="topbar">
+        <div class="topbar-title">
+          <h2 id="topbar-heading">Calendrier hebdomadaire</h2>
+          <p id="topbar-subheading">Planifiez et suivez vos séances d'entraînement</p>
+        </div>
+
+        <div class="topbar-actions" id="topbar-actions">
+          <!-- Dynamically filled depending on page -->
+        </div>
+      </header>
+
+      <section class="content-body">
+        
+        <!-- ================= PAGE 1: CALENDRIER ================= -->
+        <div class="page-view active" id="view-calendar">
+          <div class="calendar-header">
+            <div class="calendar-nav">
+              <button class="btn btn-secondary btn-icon" id="btn-prev-week" title="Semaine précédente">←</button>
+              <button class="btn btn-secondary btn-sm" id="btn-current-week">Cette semaine</button>
+              <button class="btn btn-secondary btn-icon" id="btn-next-week" title="Semaine suivante">→</button>
+              <span class="current-week-label" id="current-week-label">--</span>
+            </div>
+
+            <div>
+              <button class="btn btn-primary" id="btn-add-training-top">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Nouvel entraînement
+              </button>
+            </div>
+          </div>
+
+          <div class="week-grid" id="week-grid">
+            <!-- 7 colonnes générées en JavaScript -->
+          </div>
+        </div>
+
+        <!-- ================= PAGE 2: STATISTIQUES ================= -->
+        <div class="page-view" id="view-stats">
+          <div class="stats-period-bar">
+            <div>
+              <span style="font-size: 13px; font-weight: 600; margin-right: 12px;">Période d'analyse :</span>
+              <div class="stats-period-filters" id="period-filters">
+                <button class="period-pill active" data-period="4">4 dernières semaines</button>
+                <button class="period-pill" data-period="8">8 dernières semaines</button>
+                <button class="period-pill" data-period="12">12 dernières semaines</button>
+                <button class="period-pill" data-period="26">6 mois</button>
+                <button class="period-pill" data-period="all">Tout l'historique</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI Cards -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <span class="kpi-label">Séances terminées</span>
+              <span class="kpi-value" id="kpi-trainings-count">0</span>
+              <span class="kpi-subtext" id="kpi-trainings-sub">sur la période sélectionnée</span>
+            </div>
+
+            <div class="kpi-card">
+              <span class="kpi-label">Temps total d'entraînement</span>
+              <span class="kpi-value" id="kpi-total-time">0h 00</span>
+              <span class="kpi-subtext" id="kpi-avg-time">Moyenne: 0h/semaine</span>
+            </div>
+
+            <div class="kpi-card">
+              <span class="kpi-label">Taux de complétion</span>
+              <span class="kpi-value" id="kpi-completion-rate">0%</span>
+              <span class="kpi-subtext" id="kpi-completion-sub">Séances réalisées vs prévues</span>
+            </div>
+
+            <div class="kpi-card">
+              <span class="kpi-label">Catégorie dominante</span>
+              <span class="kpi-value" id="kpi-top-category" style="font-size: 20px;">-</span>
+              <span class="kpi-subtext" id="kpi-top-category-sub">0% du volume global</span>
+            </div>
+          </div>
+
+          <!-- Charts -->
+          <div class="charts-wrapper">
+            <!-- Multi-curve category chart -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <div class="chart-title">
+                  <h3>Entraînements terminés par semaine</h3>
+                  <p>Évolution des 4 catégories au fil des semaines</p>
+                </div>
+                <div class="chart-legend">
+                  <div class="legend-item"><span class="legend-color" style="background: var(--cat-technique);"></span> Technique</div>
+                  <div class="legend-item"><span class="legend-color" style="background: var(--cat-vitesse);"></span> Vitesse</div>
+                  <div class="legend-item"><span class="legend-color" style="background: var(--cat-endurance);"></span> Endurance</div>
+                  <div class="legend-item"><span class="legend-color" style="background: var(--cat-poids);"></span> Poids du corps</div>
+                </div>
+              </div>
+              <div class="chart-svg-container" id="category-chart-container">
+                <!-- SVG dynamically rendered -->
+              </div>
+            </div>
+
+            <!-- Total volume chart -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <div class="chart-title">
+                  <h3>Temps total d'entraînement hebdomadaire</h3>
+                  <p>Volume horaire cumulé (heures / semaine)</p>
+                </div>
+              </div>
+              <div class="chart-svg-container" id="volume-chart-container">
+                <!-- SVG dynamically rendered -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= PAGE 3: TESTS PHYSIQUES ================= -->
+        <div class="page-view" id="view-tests">
+          <div class="tests-header-actions">
+            <div>
+              <p style="font-size: 13px; color: var(--text-secondary);">Créez des tests personnalisés (temps, répétitions ou réussites/essais) et observez votre progression.</p>
+            </div>
+            <button class="btn btn-primary" id="btn-create-test">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Nouveau test
+            </button>
+          </div>
+
+          <div class="tests-grid" id="tests-grid">
+            <!-- Dynamic Test Cards -->
+          </div>
+        </div>
+
+        <!-- ================= PAGE 4: COACH IA ================= -->
+        <div class="page-view" id="view-coach">
+          <div class="coach-container">
+            
+            <!-- Banner Clé API manquante -->
+            <div class="coach-api-banner" id="coach-api-warning" style="display: none;">
+              <div class="coach-api-banner-text">
+                <h4>Clé API Gemini requise pour activer le Coach IA</h4>
+                <p>Pour dialoguer en direct avec le coach et synchroniser vos entraînements, renseignez votre clé gratuite Google AI Studio.</p>
+              </div>
+              <button class="btn btn-primary btn-sm" id="btn-config-key-banner">Configurer ma clé</button>
+            </div>
+
+            <!-- Historique des messages -->
+            <div class="chat-history" id="chat-history">
+              <!-- Dynamically populated messages -->
+            </div>
+
+            <!-- Suggestions de prompts -->
+            <div class="quick-prompts" id="quick-prompts">
+              <button class="prompt-chip" data-prompt="Analyse mes entraînements récents et dresse un bilan de mes forces et manques.">📊 Analyser mes séances récentes</button>
+              <button class="prompt-chip" data-prompt="Propose-moi un programme de 3 séances pour la semaine prochaine axé sur la technique et la vivacité.">⚽ Proposer un programme de 3 séances</button>
+              <button class="prompt-chip" data-prompt="Quels exercices spécifiques me conseilles-tu pour progresser sur mes prises de balle et premier contrôle ?">🎯 Exercices premier contrôle</button>
+              <button class="prompt-chip" data-prompt="Regarde mes tests physiques et propose-moi un plan pour améliorer mon sprint 30m.">⚡ Plan progression sprint 30m</button>
+            </div>
+
+            <!-- Barre de saisie -->
+            <div class="chat-input-bar">
+              <textarea class="chat-input" id="coach-chat-input" placeholder="Posez une question, demandez un programme ou des exercices..." rows="1"></textarea>
+              <button class="btn btn-primary btn-sm" id="btn-send-chat">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                Envoyer
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- ================= PANNEAU SLIDE-OVER D'ENTRAÎNEMENT ================= -->
+    <div class="slideover-backdrop" id="panel-training-backdrop"></div>
+    <div class="slideover-panel" id="panel-training">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <h3 id="panel-training-title-header">Détails de l'entraînement</h3>
+          <span id="panel-status-badge"></span>
+        </div>
+        <button class="btn btn-secondary btn-icon" id="btn-close-training-panel">✕</button>
+      </div>
+
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 18px;">
+        <input type="hidden" id="edit-training-id">
+
+        <!-- Statut rapide -->
+        <div class="input-group">
+          <label>Statut de la séance</label>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-set-status-prevu" style="flex: 1;">Prévu</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-set-status-termine" style="flex: 1;">✓ Terminé</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-set-status-nonrealise" style="flex: 1;">✕ Non réalisé</button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="edit-title">Titre de la séance</label>
+          <input type="text" id="edit-title" class="input-control" placeholder="Ex: Prise de balle & finition">
+        </div>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label for="edit-category">Catégorie</label>
+            <select id="edit-category" class="input-control">
+              <option value="Technique">Technique</option>
+              <option value="Vitesse">Vitesse</option>
+              <option value="Endurance">Endurance</option>
+              <option value="Poids du corps">Poids du corps</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="edit-duration">Durée (minutes)</label>
+            <input type="number" id="edit-duration" class="input-control" min="15" max="300" step="5">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label for="edit-date">Date</label>
+            <input type="date" id="edit-date" class="input-control">
+          </div>
+
+          <div class="input-group">
+            <label for="edit-time">Heure</label>
+            <input type="time" id="edit-time" class="input-control">
+          </div>
+        </div>
+
+        <!-- Exercices de la séance -->
+        <div class="input-group">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <label>Exercices de la séance</label>
+            <span style="font-size: 11px; color: var(--text-muted);" id="exercises-counter">0 exercice</span>
+          </div>
+
+          <div class="exercises-list" id="panel-exercises-list">
+            <!-- Dynamic exercises checklist -->
+          </div>
+
+          <!-- Add exercise sub-form -->
+          <div style="display: flex; gap: 8px; margin-top: 8px;">
+            <input type="text" id="new-ex-name" class="input-control" placeholder="Nom de l'exercice (ex: Slalom 5 piquets)" style="flex: 2;">
+            <input type="text" id="new-ex-sets" class="input-control" placeholder="Séries (ex: 4x10)" style="flex: 1;">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-add-exercise-to-panel">+ Ajouter</button>
+          </div>
+        </div>
+
+        <!-- Intensité RPE -->
+        <div class="input-group">
+          <div style="display: flex; justify-content: space-between;">
+            <label for="edit-intensity">Intensité ressentie (RPE 1 à 10)</label>
+            <span id="intensity-val-label" style="font-weight: 700; color: #fbbf24;">7/10</span>
+          </div>
+          <input type="range" id="edit-intensity" min="1" max="10" value="7" style="width: 100%; accent-color: var(--accent-primary);">
+        </div>
+
+        <!-- Notes -->
+        <div class="input-group">
+          <label for="edit-notes">Notes & consignes de la séance</label>
+          <textarea id="edit-notes" class="input-control" rows="2" placeholder="Sensations, consignes particulières, matériel..."></textarea>
+        </div>
+
+        <!-- Bilan personnel -->
+        <div class="input-group">
+          <label for="edit-bilan">Bilan personnel (points forts & axes de progression)</label>
+          <textarea id="edit-bilan" class="input-control" rows="3" placeholder="Qu'avez-vous réussi ? Quels aspects tactiques ou techniques retravailler ?"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="justify-content: space-between;">
+        <button class="btn btn-danger btn-sm" id="btn-delete-training">Supprimer</button>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-secondary btn-sm" id="btn-cancel-training-panel">Fermer</button>
+          <button class="btn btn-success btn-sm" id="btn-start-workout" title="Démarrer la séance en mode entraînement">
+            ▶ Commencer la séance
+          </button>
+          <button class="btn btn-primary btn-sm" id="btn-save-training-panel">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL NOUVEL ENTRAÎNEMENT ================= -->
+    <div class="modal-backdrop" id="modal-new-training">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Planifier un entraînement</h3>
+          <button class="btn btn-secondary btn-icon" id="btn-close-new-training-modal">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="input-group">
+            <label for="new-training-title">Titre de la séance</label>
+            <input type="text" id="new-training-title" class="input-control" placeholder="Ex: Travail de frappes & vivacité" required>
+          </div>
+
+          <div class="form-row">
+            <div class="input-group">
+              <label for="new-training-category">Catégorie</label>
+              <select id="new-training-category" class="input-control">
+                <option value="Technique">Technique</option>
+                <option value="Vitesse">Vitesse</option>
+                <option value="Endurance">Endurance</option>
+                <option value="Poids du corps">Poids du corps</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label for="new-training-duration">Durée (minutes)</label>
+              <input type="number" id="new-training-duration" class="input-control" value="60" min="15" max="300" step="5">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="input-group">
+              <label for="new-training-date">Date</label>
+              <input type="date" id="new-training-date" class="input-control" required>
+            </div>
+
+            <div class="input-group">
+              <label for="new-training-time">Heure</label>
+              <input type="time" id="new-training-time" class="input-control" value="18:30">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="new-training-status">Statut initial</label>
+            <select id="new-training-status" class="input-control">
+              <option value="prévu">Prévu</option>
+              <option value="terminé">Terminé</option>
+              <option value="non réalisé">Non réalisé</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="new-training-notes">Notes / Objectifs</label>
+            <textarea id="new-training-notes" class="input-control" rows="2" placeholder="Objectifs spécifiques de la séance..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="btn-cancel-new-training">Annuler</button>
+          <button class="btn btn-primary" id="btn-submit-new-training">Ajouter au calendrier</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL CRÉATION / MODIF TEST ================= -->
+    <div class="modal-backdrop" id="modal-test-form">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="modal-test-form-title">Créer un test physique</h3>
+          <button class="btn btn-secondary btn-icon" id="btn-close-test-form-modal">✕</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="test-form-id">
+
+          <div class="input-group">
+            <label for="test-form-name">Nom du test</label>
+            <input type="text" id="test-form-name" class="input-control" placeholder="Ex: Sprint 30m départ arrêté, VMA, Tirs cadrés..." required>
+          </div>
+
+          <div class="form-row">
+            <div class="input-group">
+              <label for="test-form-type">Type de mesure</label>
+              <select id="test-form-type" class="input-control">
+                <option value="temps">Temps (Chrono en secondes / minutes)</option>
+                <option value="nombre">Nombre (Répétitions, paliers, distance)</option>
+                <option value="reussites">Réussites sur un nombre d'essais (ex: 8/10)</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label for="test-form-unit">Unité</label>
+              <input type="text" id="test-form-unit" class="input-control" placeholder="Ex: s, km/h, jongles, réussites" required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="test-form-protocol">Protocole & consignes de réalisation</label>
+            <textarea id="test-form-protocol" class="input-control" rows="3" placeholder="Décrivez le protocole de test pour assurer des mesures reproductibles..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="btn-cancel-test-form">Annuler</button>
+          <button class="btn btn-primary" id="btn-submit-test-form">Enregistrer le test</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL AJOUT DE MESURE SUR UN TEST ================= -->
+    <div class="modal-backdrop" id="modal-add-measure">
+      <div class="modal-card" style="max-width: 460px;">
+        <div class="modal-header">
+          <h3 id="modal-add-measure-title">Ajouter une mesure</h3>
+          <button class="btn btn-secondary btn-icon" id="btn-close-add-measure-modal">✕</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="measure-test-id">
+
+          <div class="input-group">
+            <label for="measure-date">Date de la mesure</label>
+            <input type="date" id="measure-date" class="input-control" required>
+          </div>
+
+          <!-- Si type temps ou nombre -->
+          <div class="input-group" id="group-measure-single-val">
+            <label id="measure-single-label" for="measure-val">Valeur</label>
+            <input type="number" step="any" id="measure-val" class="input-control" placeholder="Ex: 4.25">
+          </div>
+
+          <!-- Si type réussites / essais -->
+          <div class="form-row" id="group-measure-attempts" style="display: none;">
+            <div class="input-group">
+              <label for="measure-successes">Réussites</label>
+              <input type="number" id="measure-successes" class="input-control" placeholder="Ex: 8">
+            </div>
+            <div class="input-group">
+              <label for="measure-total-attempts">Nombre d'essais</label>
+              <input type="number" id="measure-total-attempts" class="input-control" value="10">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="measure-notes">Notes & conditions (facultatif)</label>
+            <input type="text" id="measure-notes" class="input-control" placeholder="Ex: Terrain synthétique sec, vent de dos...">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="btn-cancel-add-measure">Annuler</button>
+          <button class="btn btn-primary" id="btn-submit-add-measure">Enregistrer la mesure</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL HISTORIQUE & GRAPHIQUE PROGRESSION TEST ================= -->
+    <div class="modal-backdrop" id="modal-test-history">
+      <div class="modal-card" style="max-width: 680px;">
+        <div class="modal-header">
+          <div>
+            <h3 id="modal-history-test-name">Historique du test</h3>
+            <p id="modal-history-test-protocol" style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;"></p>
+          </div>
+          <button class="btn btn-secondary btn-icon" id="btn-close-history-modal">✕</button>
+        </div>
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- Graphique de progression individuel -->
+          <div style="background: #10131c; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px;">COURBE DE PROGRESSION</div>
+            <div id="test-progress-chart-container" style="height: 180px; width: 100%;">
+              <!-- SVG chart rendered here -->
+            </div>
+          </div>
+
+          <!-- Tableau d'historique -->
+          <div>
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px;">TOUTES LES MESURES</div>
+            <div style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+              <table style="width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: left;">
+                <thead style="background: #11141e; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">
+                  <tr>
+                    <th style="padding: 8px 12px;">Date</th>
+                    <th style="padding: 8px 12px;">Résultat</th>
+                    <th style="padding: 8px 12px;">Notes</th>
+                    <th style="padding: 8px 12px; text-align: right;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="test-measures-table-body">
+                  <!-- Measures rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="btn-close-history-modal-footer">Fermer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL PARAMÈTRES IA (GEMINI API) ================= -->
+    <div class="modal-backdrop" id="modal-ai-settings">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Paramètres du Coach IA</h3>
+          <button class="btn btn-secondary btn-icon" id="btn-close-ai-settings">✕</button>
+        </div>
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: var(--radius-md); padding: 12px 14px; font-size: 12.5px; line-height: 1.5; color: var(--text-secondary);">
+            <strong style="color: #60a5fa;">Comment obtenir votre clé API gratuite ?</strong>
+            <ol style="margin-left: 18px; margin-top: 6px;">
+              <li>Rendez-vous sur <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="color: #60a5fa; text-decoration: underline;">Google AI Studio</a>.</li>
+              <li>Connectez-vous avec votre compte Google et cliquez sur <em>"Create API key"</em>.</li>
+              <li>Collez la clé ci-dessous. Elle est conservée localement sur votre machine.</li>
+            </ol>
+          </div>
+
+          <div class="input-group">
+            <label for="input-gemini-key">Clé API Google Gemini</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="password" id="input-gemini-key" class="input-control" placeholder="AIzaSy..." style="flex: 1;">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-toggle-key-visibility">Afficher</button>
+            </div>
+            <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Votre clé n'est jamais transmise à des tiers, uniquement à l'API officielle de Google.</span>
+          </div>
+
+          <div class="input-group">
+            <label for="select-gemini-model">Modèle d'IA</label>
+            <select id="select-gemini-model" class="input-control">
+              <option value="gemini-3.8-flash">Gemini 3.8 Flash (Recommandé)</option>
+              <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+            </select>
+          </div>
+
+          <div id="ai-test-status" style="font-size: 12px; display: none;"></div>
+        </div>
+        <div class="modal-footer" style="justify-content: space-between;">
+          <button class="btn btn-secondary btn-sm" id="btn-test-ai-key">Tester la clé</button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary" id="btn-cancel-ai-settings">Annuler</button>
+            <button class="btn btn-primary" id="btn-save-ai-settings">Enregistrer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL SAUVEGARDE & DONNÉES ================= -->
+    <div class="modal-backdrop" id="modal-backup">
+      <div class="modal-card" style="max-width: 480px;">
+        <div class="modal-header">
+          <h3>Sauvegarde & Gestion des Données</h3>
+          <button class="btn btn-secondary btn-icon" id="btn-close-backup-modal">✕</button>
+        </div>
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+          <p style="font-size: 12.5px; color: var(--text-secondary); line-height: 1.5;">
+            Vos entraînements et vos tests sont enregistrés dans le fichier local <code>data/football_data.json</code>. Vous pouvez également exporter ou restaurer une copie de sauvegarde au format JSON à tout moment.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button class="btn btn-secondary" id="btn-export-backup" style="justify-content: flex-start;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Télécharger une sauvegarde JSON
+            </button>
+
+            <div style="position: relative;">
+              <input type="file" id="input-import-file" accept=".json" style="display: none;">
+              <button class="btn btn-secondary" id="btn-trigger-import" style="width: 100%; justify-content: flex-start;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Restaurer depuis un fichier JSON
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="btn-close-backup-footer">Fermer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container"></div>
+
+    <!-- ================= MODE ENTRAÎNEMENT - OVERLAY PLEIN ÉCRAN ================= -->
+    <div id="workout-overlay" class="workout-overlay">
+
+      <!-- En-tête fixe -->
+      <div class="wo-header" id="wo-header">
+        <div class="wo-header-left">
+          <div class="wo-session-info">
+            <div class="wo-session-title" id="wo-session-title">Séance</div>
+            <div class="wo-session-meta" id="wo-session-meta"></div>
+          </div>
+        </div>
+        <div class="wo-header-right">
+          <button class="btn btn-secondary btn-sm" id="wo-btn-close" title="Quitter la séance">✕ Quitter</button>
+        </div>
+      </div>
+
+      <!-- Barre de progression globale -->
+      <div class="wo-progress-bar-container">
+        <div class="wo-progress-bar-fill" id="wo-progress-bar-fill"></div>
+      </div>
+      <div class="wo-progress-text" id="wo-progress-text"></div>
+
+      <!-- Corps principal -->
+      <div class="wo-body">
+
+        <!-- ── ÉCRAN EXERCICE ── -->
+        <div class="wo-exercise-screen" id="wo-exercise-screen">
+
+          <!-- Compteur + statut -->
+          <div class="wo-ex-header">
+            <span class="wo-ex-counter" id="wo-ex-counter"></span>
+            <span class="wo-ex-status-badge" id="wo-ex-status-badge"></span>
+          </div>
+
+          <!-- Nom de l'exercice -->
+          <div class="wo-ex-name" id="wo-ex-name"></div>
+
+          <!-- Séries / reps -->
+          <div class="wo-ex-sets" id="wo-ex-sets"></div>
+
+          <!-- Notes / consignes -->
+          <div class="wo-ex-notes" id="wo-ex-notes"></div>
+
+          <!-- Chronomètre -->
+          <div class="wo-timer-section" id="wo-timer-section"></div>
+
+          <!-- Affichage chrono -->
+          <div class="wo-timer-display" id="wo-timer-display">
+            <div class="wo-timer-value"></div>
+          </div>
+
+          <!-- Boutons de navigation -->
+          <div class="wo-nav-buttons">
+            <button class="btn btn-secondary wo-nav-btn" id="wo-btn-prev">← Préc.</button>
+            <button class="btn btn-secondary wo-nav-btn" id="wo-btn-skip">→ Passer</button>
+            <button class="btn btn-primary wo-nav-btn" id="wo-btn-done">✓ Terminé</button>
+            <button class="btn btn-secondary wo-nav-btn" id="wo-btn-next">Suiv. →</button>
+          </div>
+
+        </div>
+
+        <!-- ── ÉCRAN RÉCAPITULATIF ── -->
+        <div class="wo-summary-screen" id="wo-summary-screen" style="display:none;">
+          <div class="wo-summary-icon">🏆</div>
+          <div class="wo-summary-title" id="wo-summary-title"></div>
+          <div class="wo-summary-meta">
+            <span id="wo-summary-duration-planned"></span>
+            <span id="wo-summary-duration-actual"></span>
+          </div>
+          <div class="wo-summary-stats">
+            <div class="wo-stat-card">
+              <div class="wo-stat-value" id="wo-summary-done">0</div>
+              <div class="wo-stat-label">Terminés</div>
+            </div>
+            <div class="wo-stat-card skipped">
+              <div class="wo-stat-value" id="wo-summary-skipped">0</div>
+              <div class="wo-stat-label">Passés</div>
+            </div>
+            <div class="wo-stat-card total">
+              <div class="wo-stat-value" id="wo-summary-total">0</div>
+              <div class="wo-stat-label">Total</div>
+            </div>
+          </div>
+          <div class="wo-summary-actions">
+            <button class="btn btn-secondary" id="wo-btn-close-summary">Fermer sans valider</button>
+            <button class="btn btn-primary wo-validate-btn" id="wo-btn-validate">✓ Valider la séance</button>
+          </div>
+        </div>
+
+      </div><!-- end wo-body -->
+
+      <!-- Liste mini exercices (latérale sur desktop, bas sur mobile) -->
+      <div class="wo-sidebar">
+        <div class="wo-sidebar-title">Exercices</div>
+        <div class="wo-mini-list" id="wo-mini-list"></div>
+      </div>
+
+    </div><!-- end workout-overlay -->
+  </div>
+
+  <!-- JAVASCRIPT MODULES -->
+  <script src="/js/app.js"></script>
+  <script src="/js/calendar.js"></script>
+  <script src="/js/stats.js"></script>
+  <script src="/js/tests.js"></script>
+  <script src="/js/coach.js"></script>
+  <script src="/js/workout.js"></script>
+</body>
+</html>

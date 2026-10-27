@@ -1,0 +1,12 @@
+{
+  "name": "football-progression-tracker",
+  "version": "1.0.0",
+  "description": "Application web personnelle de suivi de progression au football",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["football", "tracker", "sports", "coach-ia", "training"],
+  "author": "Antigravity",
+  "license": "MIT"
+}
