@@ -580,7 +580,7 @@ async function handleRequest(req, res) {
 
 const server = http.createServer(handleRequest);
 
-server.listen(PORT, '127.0.0.1', () => {
-  console.log(`\n⚽ Application Football Tracker démarrée sur http://localhost:${PORT}`);
-  console.log(`Données enregistrées dans: ${DATA_FILE}\n`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`⚽ Application Football Tracker démarrée sur le port ${PORT}`);
+  console.log(`Données enregistrées dans: ${DATA_FILE}`);
 });
